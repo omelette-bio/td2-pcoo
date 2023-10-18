@@ -10,6 +10,7 @@ public class Midi {
   int note = 0;
   int volume = 0;
   int cmd = 0;
+  int tempo = 120;
 
   public void infosMessage(MidiEvent event) throws InvalidMidiDataException {
     this.event = event;
@@ -21,5 +22,15 @@ public class Midi {
     this.note = key % 12;
     this.volume = sm.getData2();
     this.cmd = sm.getCommand();
+  }
+
+  public int getTempoMorceau(MidiEvent event) {
+    MetaMessage mm = (MetaMessage) event.getMessage();
+    byte[] msg = mm.getMessage();
+    if (((msg[1] & 0xFF) == 0x51) && (msg[2] == 0x03)) {
+      int mspq = (msg[5] & 0xFF) | ((msg[4] & 0xFF) << 8) | ((msg[3] & 0xFF) << 16);
+      tempo = Math.round(60000001f / mspq);
+    }
+    return tempo;
   }
 }
