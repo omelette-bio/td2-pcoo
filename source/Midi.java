@@ -9,7 +9,7 @@ public class Midi {
   protected int tempo = 120;
   protected float time;
 
-  private class Message {
+  class Message {
     ShortMessage sm = null; // Initialize the message to null
     int channel = 0;
     long tick = 0;
@@ -66,5 +66,6 @@ public class Midi {
     for (Message message : this.messages) {
       System.out.println("Channel: " + message.channel + " Tick: " + message.tick + " Key: " + message.key + " Octave: " + message.octave + " Note: " + message.note + " Volume: " + message.volume + " Command: " + message.cmd);
     }
+    // System.out.println("Channel: " + messages.get(0).channel + " Tick: " + messages.get(0).tick + " Key: " + messages.get(0).key + " Octave: " + messages.get(0).octave + " Note: " + messages.get(0).note + " Volume: " + messages.get(0).volume + " Command: " + messages.get(0).cmd);
   }
 }
