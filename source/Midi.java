@@ -5,9 +5,9 @@ import java.io.IOException;
 
 public class Midi {
   protected Sequence sequence;
+  protected ArrayList<Message> messages = new ArrayList<Message>();
   protected int tempo = 120;
   protected float time;
-  protected ArrayList<Message> messages = new ArrayList<Message>();
 
   private class Message {
     ShortMessage sm = null; // Initialize the message to null
@@ -51,8 +51,8 @@ public class Midi {
       int mspq = (msg[5] & 0xFF) | ((msg[4] & 0xFF) << 8) | ((msg[3] & 0xFF) << 16);
       this.tempo = Math.round(60000001f / mspq);
     }
-    long resolution = sequence.getResolution();
-    this.time = (((float) messages.get(0).tick) * 60 / (4 * tempo * resolution));
+    long resolution = this.sequence.getResolution();
+    this.time = (((float) event.getTick()) * 60 / (4 * tempo * resolution));
   }
 
   private void addMessage(MidiEvent event) throws InvalidMidiDataException {
