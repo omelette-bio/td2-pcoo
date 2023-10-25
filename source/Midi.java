@@ -43,7 +43,7 @@ public class Midi {
     }
   }
 
-  public void setTempoMorceau(MidiEvent event) {
+  private void setTempoMorceau(MidiEvent event) {
     MetaMessage mm = (MetaMessage) event.getMessage();
     byte[] msg = mm.getMessage();
     if (((msg[1] & 0xFF) == 0x51) && (msg[2] == 0x03)) {
@@ -52,7 +52,7 @@ public class Midi {
     }
   }
 
-  public void addMessage(MidiEvent event) throws InvalidMidiDataException {
+  private void addMessage(MidiEvent event) throws InvalidMidiDataException {
     Message message = new Message();
     message.infosMessage(event);
     messages.add(message);
