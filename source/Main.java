@@ -11,7 +11,7 @@ public class Main {
       
       WavFile wav_file = new WavFile();
       wav_file.convertSignalToByte(midi_to_wav_signal.signals);
-      wav_file.exportSignalToWav(wav_file.byte_signal);
+      wav_file.exportSignalToWav();
     } 
     catch (InvalidMidiDataException e) {System.err.println("error in the midi file");} 
     catch (Exception e) {System.err.println("an error has occured");}

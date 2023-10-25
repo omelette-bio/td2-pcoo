@@ -53,13 +53,14 @@ public class MidiToWavSignal {
 
   public void parseMidiData(ArrayList<Midi.Message> messages) {
     for (Midi.Message message : messages) {
+      float frequence = note_to_freq.get(message.note) * (float) Math.pow(2, message.octave - 4);
       switch (message.channel) {
         case 9:
-          Signal signal_blanc = new Signal(note_to_freq.get(message.note), "blanc");
+          Signal signal_blanc = new Signal(frequence, "blanc");
           signals.add(signal_blanc.signal);
           break;
         default:
-          Signal signal_carre = new Signal(note_to_freq.get(message.note), "carre");
+          Signal signal_carre = new Signal(frequence, "carre");
           signals.add(signal_carre.signal);
           break;
       }
