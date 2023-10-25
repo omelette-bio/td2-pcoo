@@ -22,13 +22,12 @@ public class WavFile {
     }
   }
 
-  public void exportSignalToWav() throws IOException{
+  public void exportSignalToWav() throws IOException {
     AudioFormat format = new AudioFormat(44100, 8, 1, true, true);
     File file = new File("mon_fichier.wav");
-    for (byte[] bytes : this.byte_signal){
-      System.out.println(bytes.length);
+    for (byte[] bytes : this.byte_signal) {
       AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(bytes), format, bytes.length);
-      AudioSystem.write(ais, AudioFileFormat.Type.WAVE, file);
+      AudioSystem.write(ais, AudioFileFormat.Type.WAVE, new FileOutputStream(file, true));
     }
   }
 }
