@@ -6,6 +6,7 @@ import java.io.IOException;
 public class Midi {
   protected Sequence sequence;
   protected int tempo = 120;
+  protected float time;
   protected ArrayList<Message> messages = new ArrayList<Message>();
 
   private class Message {
@@ -35,7 +36,7 @@ public class Midi {
     for (Track track : sequence.getTracks()) {
       for (int i = 0; i < track.size(); i++) {
         if (track.get(i).getMessage() instanceof MetaMessage) {
-          this.setTempoMorceau(track.get(i));
+          this.setTempoTimeMorceau(track.get(i));
         } else {
           this.addMessage(track.get(i));
         }
@@ -43,13 +44,15 @@ public class Midi {
     }
   }
 
-  private void setTempoMorceau(MidiEvent event) {
+  private void setTempoTimeMorceau(MidiEvent event) {
     MetaMessage mm = (MetaMessage) event.getMessage();
     byte[] msg = mm.getMessage();
     if (((msg[1] & 0xFF) == 0x51) && (msg[2] == 0x03)) {
       int mspq = (msg[5] & 0xFF) | ((msg[4] & 0xFF) << 8) | ((msg[3] & 0xFF) << 16);
       this.tempo = Math.round(60000001f / mspq);
     }
+    long resolution = sequence.getResolution();
+    this.time = (((float) messages.get(0).tick) * 60 / (4 * tempo * resolution));
   }
 
   private void addMessage(MidiEvent event) throws InvalidMidiDataException {
