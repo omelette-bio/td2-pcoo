@@ -5,6 +5,7 @@ public class Main {
     try {
       Midi midi_file = new Midi();
       midi_file.parseMidi(args[0]);
+      //midi_file.afficherMidi();
 
       MidiToWavSignal midi_to_wav_signal = new MidiToWavSignal();
       midi_to_wav_signal.parseMidiData(midi_file.messages);

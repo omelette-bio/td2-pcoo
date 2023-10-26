@@ -16,6 +16,7 @@ public class WavFile {
         bb.putInt(signal[i]);
         for (int j=0; j<4; j++){
           bytes[k] = bb.get(j);
+          k+=1;
         }
       }
       this.byte_signal.add(bytes);
@@ -24,10 +25,10 @@ public class WavFile {
 
   public void exportSignalToWav() throws IOException {
     AudioFormat format = new AudioFormat(44100, 8, 1, true, true);
-    File file = new File("mon_fichier.wav");
+    FileOutputStream file = new FileOutputStream(new File("mon_fichier.wav"), true);
     for (byte[] bytes : this.byte_signal) {
       AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(bytes), format, bytes.length);
-      AudioSystem.write(ais, AudioFileFormat.Type.WAVE, new FileOutputStream(file, true));
+      AudioSystem.write(ais, AudioFileFormat.Type.WAVE, file);
     }
   }
 }
