@@ -1,7 +1,6 @@
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.nio.ByteBuffer;
 
 public class WavFile {
 
@@ -9,15 +8,9 @@ public class WavFile {
 
   public void convertSignalToByte(ArrayList<int[]> signals) {
     for (int[] signal : signals) {
-      byte[] bytes = new byte[signal.length * 4];
-      int k = 0;
+      byte[] bytes = new byte[signal.length];
       for (int i=0; i < 44100; i++){
-        ByteBuffer bb = ByteBuffer.allocate(4);
-        bb.putInt(signal[i]);
-        for (int j=0; j<4; j++){
-          bytes[k] = bb.get(j);
-          k+=1;
-        }
+        bytes[i] = (byte) signal[i];
       }
       this.byte_signal.add(bytes);
     }
