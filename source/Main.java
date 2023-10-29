@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import javax.sound.midi.InvalidMidiDataException;
 
 public class Main {
@@ -15,6 +17,6 @@ public class Main {
       wav_file.exportSignalToWav();
     } 
     catch (InvalidMidiDataException e) {System.err.println("error in the midi file");} 
-    catch (Exception e) {System.err.println("an error has occured");}
+    catch (IOException e) {System.err.println("an error has occured");}
   }
 }

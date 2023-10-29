@@ -1,12 +1,13 @@
 // import javax.sound.sampled.*;
 // import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.ArrayList;
 
 public class MidiToWavSignal {
+
   HashMap<Integer, Float> note_to_freq = new HashMap<Integer, Float>();
-  ArrayList<int[]> signals = new ArrayList<int[]>();
+  ArrayList<Integer> signals = new ArrayList<Integer>();
 
   public MidiToWavSignal() {
     note_to_freq.put(0, 493.883f);
@@ -24,53 +25,51 @@ public class MidiToWavSignal {
   }
 
   private class Signal {
-    public int signal[] = new int[44100];
 
-    Signal (float frequence, String type) {
+    Signal(float frequence, String type, int nb_samples, int volume) {
       if (type == "carre") {
-        this.signalCarre(frequence);
+        this.signalCarre(frequence, nb_samples, volume);
       } else {
-        this.bruitBlanc();
+        this.bruitBlanc(nb_samples, volume);
       }
     }
 
-    public void signalCarre(float frequence) {
-      for (int i = 0; i < 44100; i++) {
-        if ((4*i % (44100f/frequence)) > 22050f/frequence) {
-          this.signal[i] = 127;
+    public void signalCarre(float frequence, int nb_samples, int volume) {
+      for (int i = 0; i < nb_samples; i++) {
+        if (
+          (4 * i % ((float) nb_samples / frequence)) >
+          ((float) nb_samples / 2) /
+          frequence
+        ) {
+          signals.add(volume);
         } else {
-          this.signal[i] = -128;
+          signals.add(-volume);
         }
       }
     }
 
-    public void bruitBlanc() {
-      for (int i = 0; i < 44100; i++) {
-        this.signal[i] = (new Random()).nextInt(-128,128);
+    public void bruitBlanc(int nb_samples, int volume) {
+      for (int i = 0; i < nb_samples; i++) {
+        signals.add((new Random()).nextInt(-volume, volume+1));
       }
     }
   }
 
   public void parseMidiData(ArrayList<Midi.Message> messages) {
-    for (Midi.Message message : messages) {
-      float frequence = note_to_freq.get(message.note) * (float) Math.pow(2, message.octave - 4);
-      switch (message.channel) {
-        case 9:
-          Signal signal_blanc = new Signal(frequence, "blanc");
-          signals.add(signal_blanc.signal);
-          break;
-        default:
-          Signal signal_carre = new Signal(frequence, "carre");
-          signals.add(signal_carre.signal);
-          break;
-      }
-    }
-  }
-
-  public void displaySignal() {
-    for (int[] signal : signals) {
-      for (int i = 0; i < 44100; i++) {
-        System.out.println(signal[i]);
+    int len = messages.size();
+    for (int i = 0; i < len; i++) {
+      if (messages.get(i).cmd == 144) {
+        float duree = messages.get(i + 1).time - messages.get(i).time;
+        int nb_samples = Math.round(duree * 44100);
+        float frequence =
+          note_to_freq.get(messages.get(i).note) *
+          (float) Math.pow(2, messages.get(i).octave - 4);
+        switch (messages.get(i).channel) {
+          case 9:
+            new Signal(frequence, "blanc", nb_samples, messages.get(i).volume);
+          default:
+            new Signal(frequence, "carre", nb_samples, messages.get(i).volume);
+        }
       }
     }
   }
