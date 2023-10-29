@@ -8,14 +8,12 @@ public class Midi {
   protected ArrayList<Message> messages = new ArrayList<Message>();
   protected int tempo = 120;
   protected long resolution = 0;
-  protected float prev_time = 0;
 
   class Message {
-    ShortMessage sm = null; // Initialize the message to null
-    int channel, key, octave, note, volume, cmd;
+    ShortMessage sm = null;
+    int channel, key, octave, note, volume, cmd, nb_samples;
     long tick = 0;
     float time = 0;
-    int nb_samples;
 
     public void infosMessage(MidiEvent event) throws InvalidMidiDataException {
       this.sm = (ShortMessage) event.getMessage();
@@ -26,7 +24,6 @@ public class Midi {
       this.note = key % 12;
       this.volume = sm.getData2();
       this.cmd = sm.getCommand();
-      // System.out.println(resolution + " " + tempo);
       this.time = (((float) this.tick) * 60 / (tempo * resolution));
     }
   }
@@ -58,18 +55,5 @@ public class Midi {
     Message message = new Message();
     message.infosMessage(event);
     messages.add(message);
-  }
-
-  public void afficherMidi() {
-    /* System.out.println(this.messages.size());
-    for (Message message : this.messages) {
-      System.out.println(message.nb_samples);
-    } */
-    int i = 0;
-    for (Message message : this.messages) {
-      System.out.println(i + ":" + message.time);
-      i++;
-    }
-
   }
 }
