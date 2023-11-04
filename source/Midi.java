@@ -11,7 +11,7 @@ public class Midi {
 
   class Message {
     ShortMessage sm = null;
-    int channel, octave, note, volume, cmd, nb_samples;
+    int channel, octave, note, volume, cmd;
     float time = 0;
 
     Message(MidiEvent event) throws InvalidMidiDataException {
