@@ -3,34 +3,47 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
+// this class is used to parse a midi file and store all the messages
 public class Midi {
-  protected Sequence sequence;
   protected ArrayList<Message> messages = new ArrayList<Message>();
   protected int tempo = 120;
   protected long resolution = 0;
+  private float cur_time = 0, prec_time = 0;
 
+  // this class is used to store a message's data
   class Message {
-    ShortMessage sm = null;
-    int channel, octave, note, volume, cmd;
-    float time = 0;
+    protected int channel, octave, note, volume, cmd;
+    protected float time = 0;
+
 
     Message(MidiEvent event) throws InvalidMidiDataException {
-      sm = (ShortMessage) event.getMessage();
-      channel = sm.getChannel();
-      long tick = event.getTick();
-
+      ShortMessage sm = (ShortMessage) event.getMessage();
+      
+      // sound calculation
       int key = sm.getData1();
       octave = (key / 12) - 1;
       note = key % 12;
-
+      channel = sm.getChannel();
+      
+      // volume calculation
       volume = sm.getData2();
+
+      // time calculation, we create a "time cursor" to avoid having a note that starts at 38 then having the next one starting at 0.
+      time = (((float) event.getTick()) * 60 / (tempo * resolution));
+      float bkup = time;
+      
+      if (time < prec_time) { time = prec_time; }
+      cur_time += time - prec_time;
+      time = cur_time;
+      prec_time = bkup;
+
+      // command calculation, check if the note is starting or ending
       cmd = sm.getCommand();
-      time = (((float) tick) * 60 / (tempo * resolution));
     }
   }
 
   public void parseMidi(String midiFile) throws Error, InvalidMidiDataException, IOException {
-    sequence = MidiSystem.getSequence(new File(midiFile));
+    Sequence sequence = MidiSystem.getSequence(new File(midiFile));
     resolution = sequence.getResolution();
 
     for (Track track : sequence.getTracks()) {
