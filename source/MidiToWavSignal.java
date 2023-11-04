@@ -56,6 +56,14 @@ public class MidiToWavSignal {
     for (int i = 0; i < messages.size(); i++) {
       // if message's command is 144, we start the note
       if (messages.get(i).cmd == 144) {
+        // create blank in the signal if there is a pause between notes
+        if (i > 0) {
+          float pause = messages.get(i).time - messages.get(i - 1).time;
+          int nb_samples_pause = Math.round(pause * 44100);
+          for (int j = 0; j < nb_samples_pause; j++) {
+            signals.add(0);
+          }
+        }
         // substract end and start of the note (end is defined by a message with command 128) to get the duration of the note
         float duration = messages.get(i + 1).time - messages.get(i).time;
         //then we calculate how many samples the note takes

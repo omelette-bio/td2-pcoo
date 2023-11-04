@@ -14,7 +14,7 @@ public class Midi {
     int channel, octave, note, volume, cmd, nb_samples;
     float time = 0;
 
-    public void infosMessage(MidiEvent event) throws InvalidMidiDataException {
+    Message(MidiEvent event) throws InvalidMidiDataException {
       sm = (ShortMessage) event.getMessage();
       channel = sm.getChannel();
       long tick = event.getTick();
@@ -32,31 +32,27 @@ public class Midi {
   public void parseMidi(String midiFile) throws Error, InvalidMidiDataException, IOException {
     sequence = MidiSystem.getSequence(new File(midiFile));
     resolution = sequence.getResolution();
-    
+
     for (Track track : sequence.getTracks()) {
       for (int i = 0; i < track.size(); i++) {
         if (track.get(i).getMessage() instanceof MetaMessage) {
-          setTempoTimeMorceau(track.get(i));
+          setTempoMorceau(track.get(i));
         } else {
-          addMessage(track.get(i));
+          messages.add(new Message(track.get(i)));
         }
       }
     }
   }
 
-  private void setTempoTimeMorceau(MidiEvent event) {
+  private void setTempoMorceau(MidiEvent event) {
     MetaMessage mm = (MetaMessage) event.getMessage();
     byte[] msg = mm.getMessage();
     if (((msg[1] & 0xFF) == 0x51) && (msg[2] == 0x03)) {
-      int mspq = (msg[5] & 0xFF) | ((msg[4] & 0xFF) << 8) | ((msg[3] & 0xFF) << 16);
-      this.tempo = Math.round(60000001f / mspq);
+      int mspq = (msg[5] & 0xFF) 
+        | ((msg[4] & 0xFF) << 8) 
+        | ((msg[3] & 0xFF) << 16);
+      tempo = Math.round(60000001f / mspq);
     }
-  }
-
-  private void addMessage(MidiEvent event) throws InvalidMidiDataException {
-    Message message = new Message();
-    message.infosMessage(event);
-    messages.add(message);
   }
 
   public void displayAllMessages() {
