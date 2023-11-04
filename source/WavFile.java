@@ -16,7 +16,7 @@ public class WavFile {
   public void exportSignalToWav() throws IOException {
     AudioFormat format = new AudioFormat(44100, 8, 1, true, true);
     AudioInputStream ais = new AudioInputStream(new
-    ByteArrayInputStream(byte_signal), format, byte_signal.length);
+      ByteArrayInputStream(byte_signal), format, byte_signal.length);
     File file = new File("mon_fichier.wav");
     AudioSystem.write(ais, AudioFileFormat.Type.WAVE, file);
   }

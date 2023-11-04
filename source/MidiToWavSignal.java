@@ -10,23 +10,23 @@ public class MidiToWavSignal {
 
   // constuctor set a HashMap to change a note into a frequence
   public MidiToWavSignal() {
-    note_to_freq.put(0, 493.883f);
-    note_to_freq.put(1, 466.164f);
-    note_to_freq.put(2, 440.000f);
-    note_to_freq.put(3, 415.305f);
-    note_to_freq.put(4, 391.995f);
-    note_to_freq.put(5, 369.994f);
-    note_to_freq.put(6, 349.228f);
-    note_to_freq.put(7, 329.628f);
-    note_to_freq.put(8, 311.127f);
-    note_to_freq.put(9, 293.665f);
-    note_to_freq.put(10, 277.183f);
-    note_to_freq.put(11, 261.626f);
+    note_to_freq.put(11, 493.883f);
+    note_to_freq.put(10, 466.164f);
+    note_to_freq.put(9, 440.000f);
+    note_to_freq.put(8, 415.305f);
+    note_to_freq.put(7, 391.995f);
+    note_to_freq.put(6, 369.994f);
+    note_to_freq.put(5, 349.228f);
+    note_to_freq.put(4, 329.628f);
+    note_to_freq.put(3, 311.127f);
+    note_to_freq.put(2, 293.665f);
+    note_to_freq.put(1, 277.183f);
+    note_to_freq.put(0, 261.626f);
   }
 
   // method to add a signal to the main signal ArrayList 
-  private void addSignal(float frequency, int type, int nb_samples, int volume) {
-    switch (type){
+  private void addSignal(float frequency, int channel, int nb_samples, int volume) {
+    switch (channel){
       case 9:
         this.whiteNoise(nb_samples, volume);
       default: 
@@ -40,7 +40,7 @@ public class MidiToWavSignal {
       if ((i % ((float) nb_samples / frequency)) > ((float) nb_samples / 2) / frequency) {
         signals.add(volume);
       } else {
-        signals.add(-volume);
+        signals.add(-(volume+1));
       }
     }
   }
@@ -48,7 +48,7 @@ public class MidiToWavSignal {
   // add random numbers to generate whitenoise
   private void whiteNoise(int nb_samples, int volume) {
     for (int i = 0; i < nb_samples; i++) {
-      signals.add((new Random()).nextInt(-volume, volume+1));
+      signals.add((new Random()).nextInt(-(volume+1), volume+1));
     }
   }
 
@@ -60,12 +60,12 @@ public class MidiToWavSignal {
         float duration = messages.get(i + 1).time - messages.get(i).time;
         //then we calculate how many samples the note takes
         int nb_samples = Math.round(duration * 44100);
-
+        
         // calculate the frequency of the note
         float frequency =
-          note_to_freq.get(messages.get(i).note) * 
-          (float) Math.pow(2, messages.get(i).octave - 4);
-
+        note_to_freq.get(messages.get(i).note) * 
+        (float) Math.pow(2, messages.get(i).octave - 4);
+        
         // finally we add the signal to the ArrayList of signals
         addSignal(frequency, messages.get(i).channel, nb_samples, messages.get(i).volume);
       }

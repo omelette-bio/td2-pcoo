@@ -11,32 +11,34 @@ public class Midi {
 
   class Message {
     ShortMessage sm = null;
-    int channel, key, octave, note, volume, cmd, nb_samples;
-    long tick = 0;
+    int channel, octave, note, volume, cmd, nb_samples;
     float time = 0;
 
     public void infosMessage(MidiEvent event) throws InvalidMidiDataException {
-      this.sm = (ShortMessage) event.getMessage();
-      this.channel = sm.getChannel();
-      this.tick = event.getTick();
-      this.key = sm.getData1();
-      this.octave = (key / 12) - 1;
-      this.note = key % 12;
-      this.volume = sm.getData2();
-      this.cmd = sm.getCommand();
-      this.time = (((float) this.tick) * 60 / (tempo * resolution));
+      sm = (ShortMessage) event.getMessage();
+      channel = sm.getChannel();
+      long tick = event.getTick();
+
+      int key = sm.getData1();
+      octave = (key / 12) - 1;
+      note = key % 12;
+
+      volume = sm.getData2();
+      cmd = sm.getCommand();
+      time = (((float) tick) * 60 / (tempo * resolution));
     }
   }
 
   public void parseMidi(String midiFile) throws Error, InvalidMidiDataException, IOException {
-    this.sequence = MidiSystem.getSequence(new File(midiFile));
+    sequence = MidiSystem.getSequence(new File(midiFile));
     resolution = sequence.getResolution();
+    
     for (Track track : sequence.getTracks()) {
       for (int i = 0; i < track.size(); i++) {
         if (track.get(i).getMessage() instanceof MetaMessage) {
-          this.setTempoTimeMorceau(track.get(i));
+          setTempoTimeMorceau(track.get(i));
         } else {
-          this.addMessage(track.get(i));
+          addMessage(track.get(i));
         }
       }
     }
@@ -55,5 +57,12 @@ public class Midi {
     Message message = new Message();
     message.infosMessage(event);
     messages.add(message);
+  }
+
+  public void displayAllMessages() {
+    for (Message message : messages) {
+      System.out.println(message.time + " " + message.cmd + " " + message.note + " " + message.octave + " "
+          + message.volume + " " + message.channel);
+    }
   }
 }
