@@ -11,11 +11,11 @@ public class Midi {
   private float cur_time = 0, prec_time = 0;
 
   // this class is used to store a message's data
-  class Message {
-    protected int channel, octave, note, volume, cmd;
+  public class Message {
+    protected int octave, note, volume, cmd;
     protected float time = 0;
-
-
+    Type signalType;
+  
     Message(MidiEvent event) throws InvalidMidiDataException {
       ShortMessage sm = (ShortMessage) event.getMessage();
       
@@ -23,12 +23,23 @@ public class Midi {
       int key = sm.getData1();
       octave = (key / 12) - 1;
       note = key % 12;
-      channel = sm.getChannel();
-      
+  
+      int channel = sm.getChannel();
+  
+      switch(channel) {
+        case 9:
+          signalType = Type.BLANC;
+          break;
+        default:
+          signalType = Type.CARRE;
+          break;
+      }
+  
       // volume calculation
       volume = sm.getData2();
-
-      // time calculation, we create a "time cursor" to avoid having a note that starts at 38 then having the next one starting at 0.
+  
+      time = (((float) event.getTick()) * 60 / (tempo * resolution));
+  
       time = (((float) event.getTick()) * 60 / (tempo * resolution));
       float bkup = time;
       
@@ -71,7 +82,7 @@ public class Midi {
   public void displayAllMessages() {
     for (Message message : messages) {
       System.out.println(message.time + " " + message.cmd + " " + message.note + " " + message.octave + " "
-          + message.volume + " " + message.channel);
+          + message.volume + " " + message.signalType);
     }
   }
 }

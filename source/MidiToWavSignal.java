@@ -25,9 +25,9 @@ public class MidiToWavSignal {
   }
 
   // method to add a signal to the main signal ArrayList 
-  private void addSignal(float frequency, int channel, int nb_samples, int volume) {
-    switch (channel){
-      case 9:
+  private void addSignal(float frequency, Type signal, int nb_samples, int volume) {
+    switch (signal){
+      case BLANC:
         this.whiteNoise(nb_samples, volume);
       default: 
         this.squareSignal(frequency, nb_samples, volume);
@@ -75,7 +75,7 @@ public class MidiToWavSignal {
         (float) Math.pow(2, messages.get(i).octave - 4);
         
         // finally we add the signal to the ArrayList of signals
-        addSignal(frequency, messages.get(i).channel, nb_samples, messages.get(i).volume);
+        addSignal(frequency, messages.get(i).signalType, nb_samples, messages.get(i).volume);
       }
 
     }

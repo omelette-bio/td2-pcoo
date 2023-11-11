@@ -10,7 +10,7 @@ public class Main {
       MidiToWavSignal midi_to_wav_signal = new MidiToWavSignal();
       midi_to_wav_signal.parseMidiData(midi_file.messages);
       
-      WavFile wav_file = new WavFile();
+      WavFile wav_file = new WavFile(args[0]);
       wav_file.convertSignalToByte(midi_to_wav_signal.signals);
       wav_file.exportSignalToWav();
     } 
