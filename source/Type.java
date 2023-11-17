@@ -1,10 +1,10 @@
 public enum Type {
-  CARRE,
-  BLANC;
+  SQUARE,
+  NOISE;
   public String toString() {
     switch(this) {
-      case CARRE: return "Carre";
-      case BLANC: return "Blanc";
+      case SQUARE: return "Square";
+      case NOISE: return "Noise";
       default: throw new IllegalArgumentException();
     }
   }

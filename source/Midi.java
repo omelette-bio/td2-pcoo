@@ -28,10 +28,10 @@ public class Midi {
   
       switch(channel) {
         case 9:
-          signalType = Type.BLANC;
+          signalType = Type.NOISE;
           break;
         default:
-          signalType = Type.CARRE;
+          signalType = Type.SQUARE;
           break;
       }
   

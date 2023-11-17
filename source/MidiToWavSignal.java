@@ -27,7 +27,7 @@ public class MidiToWavSignal {
   // method to add a signal to the main signal ArrayList 
   private void addSignal(float frequency, Type signal, int nb_samples, int volume) {
     switch (signal){
-      case BLANC:
+      case NOISE:
         this.whiteNoise(nb_samples, volume);
       default: 
         this.squareSignal(frequency, nb_samples, volume);
