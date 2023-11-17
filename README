@@ -1,1 +1,12 @@
-Pour éxecuter le projet, vous pouvez
+Execution:
+To work with the project, I made a makefile to make things easier to compile and run.
+The makefile has the following commands:
+- make compile : just compiles the source code into the bin folder
+- make fichier1 : compiles the source code and runs the program with the file1.md as input
+- make fichier2 : compiles the source code and runs the program with the file2.md as input
+- make fichier3 : compiles the source code and runs the program with the file3.md as input
+- make clean : removes the bin folder
+
+Known bugs:
+- The output file's pitch is a bit higher than the input file's pitch
+- And half the part of the output wav file is glitched
