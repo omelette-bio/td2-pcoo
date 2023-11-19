@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import java.util.Iterator;
+
 public class MidiToWavSignal {
   HashMap<Integer, Float> note_to_freq = new HashMap<Integer, Float>();
   ArrayList<Integer> signals = new ArrayList<Integer>();
+  HashMap<Integer, Integer> data = new HashMap<>();
 
   // constuctor set a HashMap to change a note into a frequence
   public MidiToWavSignal() {
@@ -73,11 +76,20 @@ public class MidiToWavSignal {
         float frequency =
         note_to_freq.get(messages.get(i).note) * 
         (float) Math.pow(2, messages.get(i).octave - 4);
-        
+
+        //System.out.println("note: " + messages.get(i).note + " octave: " + messages.get(i).octave + " frequency: " + frequency + " duration: " + duration + " time: " + messages.get(i).time + " nb_samples: " + nb_samples);
+        //data.put(i, nb_samples);
         // finally we add the signal to the ArrayList of signals
         addSignal(frequency, messages.get(i).signalType, nb_samples, messages.get(i).volume);
       }
+    }
+  }
 
+  public void displayData() {
+    Iterator<Integer> it = (Iterator<Integer>) data.keySet().iterator();
+    while (it.hasNext()) {
+      int key = (int) it.next();
+      System.out.println("key: " + key + " value: " + data.get(key));
     }
   }
 }

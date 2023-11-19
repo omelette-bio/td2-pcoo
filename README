@@ -8,5 +8,5 @@ The makefile has the following commands:
 - make clean : removes the bin folder
 
 Known bugs:
-- The output file's pitch is a bit higher than the input file's pitch
-- And half the part of the output wav file is glitched
+- The output file's pitch is a bit higher than the input file's pitch, I tried to fix it with octaves lowered by 3, see the result
+- The song is looped, I don't know how much times, but each time the notes are 2 notes higher than the previous loop

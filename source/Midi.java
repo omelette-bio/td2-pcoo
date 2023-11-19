@@ -21,7 +21,7 @@ public class Midi {
       
       // sound calculation
       int key = sm.getData1();
-      octave = (key / 12) - 1;
+      octave = (key / 12) - 3;
       note = key % 12;
   
       int channel = sm.getChannel();
@@ -61,7 +61,7 @@ public class Midi {
       for (int i = 0; i < track.size(); i++) {
         if (track.get(i).getMessage() instanceof MetaMessage) {
           setTempoMorceau(track.get(i));
-        } else {
+        } else if (track.get(i).getMessage() instanceof ShortMessage){
           messages.add(new Message(track.get(i)));
         }
       }
