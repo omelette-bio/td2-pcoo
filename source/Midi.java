@@ -15,13 +15,15 @@ public class Midi {
     protected int octave, note, volume, cmd;
     protected float time = 0;
     Type signalType;
+    protected int tempo_msg;
   
     Message(MidiEvent event) throws InvalidMidiDataException {
       ShortMessage sm = (ShortMessage) event.getMessage();
-      
+      tempo_msg = tempo;
+
       // sound calculation
       int key = sm.getData1();
-      octave = (key / 12) - 3;
+      octave = (key / 12) - 1;
       note = key % 12;
   
       int channel = sm.getChannel();
@@ -38,15 +40,15 @@ public class Midi {
       // volume calculation
       volume = sm.getData2();
   
-      time = (((float) event.getTick()) * 60 / (tempo * resolution));
+      time = ( (((float) event.getTick()) * 60) / (tempo * resolution));
   
-      time = (((float) event.getTick()) * 60 / (tempo * resolution));
-      float bkup = time;
-      
-      if (time < prec_time) { time = prec_time; }
-      cur_time += time - prec_time;
+      if (time < prec_time) {
+        cur_time += (float) (0xFFFF - prec_time + event.getTick()) * 60 / (tempo * resolution);
+      } else {
+          cur_time += time - prec_time;
+      }
       time = cur_time;
-      prec_time = bkup;
+      prec_time = time;
 
       // command calculation, check if the note is starting or ending
       cmd = sm.getCommand();
@@ -56,14 +58,16 @@ public class Midi {
   public void parseMidi(String midiFile) throws Error, InvalidMidiDataException, IOException {
     Sequence sequence = MidiSystem.getSequence(new File(midiFile));
     resolution = sequence.getResolution();
+    
 
+    //loop through the midi file and store all the messages
     for (Track track : sequence.getTracks()) {
       for (int i = 0; i < track.size(); i++) {
         if (track.get(i).getMessage() instanceof MetaMessage) {
           setTempoMorceau(track.get(i));
         } else if (track.get(i).getMessage() instanceof ShortMessage){
           messages.add(new Message(track.get(i)));
-        }
+        } 
       }
     }
   }
@@ -82,7 +86,7 @@ public class Midi {
   public void displayAllMessages() {
     for (Message message : messages) {
       System.out.println(message.time + " " + message.cmd + " " + message.note + " " + message.octave + " "
-          + message.volume + " " + message.signalType);
+          + message.volume + " " + message.signalType + " " + message.tempo_msg);
     }
   }
 }
