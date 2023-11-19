@@ -42,13 +42,12 @@ public class Midi {
   
       time = ( (((float) event.getTick()) * 60) / (tempo * resolution));
   
-      if (time < prec_time) {
-        cur_time += (float) (0xFFFF - prec_time + event.getTick()) * 60 / (tempo * resolution);
-      } else {
-          cur_time += time - prec_time;
-      }
+      float bkup = time;
+      
+      if (time < prec_time) { time = prec_time; }
+      cur_time += time - prec_time;
       time = cur_time;
-      prec_time = time;
+      prec_time = bkup;
 
       // command calculation, check if the note is starting or ending
       cmd = sm.getCommand();
