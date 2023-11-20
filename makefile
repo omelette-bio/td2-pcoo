@@ -12,13 +12,13 @@ compile:
 	$(JAVAC) -d $(BIN) -sourcepath $(SRC) $(SRC)/*.java
 
 fichier1: compile
-	$(JAVA) -cp $(CLASSPATH) Main $(MIDI)/fichier1.mid
+	$(JAVA) -cp $(CLASSPATH) ExportWav $(MIDI)/fichier1.mid
 
 fichier2: compile
-	$(JAVA) -cp $(CLASSPATH) Main $(MIDI)/fichier2.mid
+	$(JAVA) -cp $(CLASSPATH) ExportWav $(MIDI)/fichier2.mid
 
 fichier3: compile
-	$(JAVA) -cp $(CLASSPATH) Main $(MIDI)/fichier3.mid
+	$(JAVA) -cp $(CLASSPATH) ExportWav $(MIDI)/fichier3.mid
 
 clean:
 	rm -rf $(BIN)
