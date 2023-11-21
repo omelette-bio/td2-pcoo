@@ -54,7 +54,7 @@ public class ExportWav {
   // to add a square signal corresponding to the note
   private void squareSignal(float frequency, int nb_samples, int volume) {
     for (int i = 0; i < nb_samples; i++) {
-      if ((i % ( ((float) nb_samples ) / frequency)) > (( (float) nb_samples ) / 2) / frequency) {
+      if ((i % ( 44100f / frequency )) > (22050f / 2) / frequency) {
         signal.add(volume);
       } else {
         signal.add(-(volume+1));
